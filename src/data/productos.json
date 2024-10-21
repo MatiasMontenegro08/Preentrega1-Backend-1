@@ -1,0 +1,112 @@
+[
+     {
+          "id": 1,
+          "title": "Remera algodón adulto",
+          "description": "Remeras de algodón peinado para adultos talles del S al XXL.",
+          "code": "raa",
+          "price": 15500,
+          "status": true,
+          "stock": 10,
+          "category": "Remeras",
+          "thumbnails": []
+     },
+     {
+          "id": 2,
+          "title": "Remera algodón niño",
+          "description": "Remeras de algodón peinado para niños talles del 2 al 16.",
+          "code": "ran",
+          "price": 13500,
+          "status": true,
+          "stock": 10,
+          "category": "Remeras",
+          "thumbnails": []
+     },
+     {
+          "id": 3,
+          "title": "Remera modal adulto",
+          "description": "Remeras de modal para adultos talles del S al XXL.",
+          "code": "rma",
+          "price": 11500,
+          "status": true,
+          "stock": 10,
+          "category": "Remeras",
+          "thumbnails": []
+     },
+     {
+          "id": 4,
+          "title": "Remera modal niño",
+          "description": "Remeras de modal para niños talles del S al XXL.",
+          "code": "rmn",
+          "price": 10500,
+          "status": true,
+          "stock": 10,
+          "category": "Remeras",
+          "thumbnails": []
+     },
+     {
+          "id": 5,
+          "title": "Taza personalizada",
+          "description": "Taza de cerámica blanca personalizada.",
+          "code": "tpb",
+          "price": 8000,
+          "status": true,
+          "stock": 10,
+          "category": "Tazas",
+          "thumbnails": []
+     },
+     {
+          "id": 6,
+          "title": "Taza personalizada mágica",
+          "description": "Taza de cerámica mágica personalizada, el diseño aparece cuando introducimos liquido caliente en la taza.",
+          "code": "tpm",
+          "price": 9500,
+          "status": true,
+          "stock": 10,
+          "category": "Tazas",
+          "thumbnails": []
+     },
+     {
+          "id": 7,
+          "title": "Fotos polaroid x12u.",
+          "description": "Fotos de 10x9 cm por 12 unidades.",
+          "code": "fp12",
+          "price": 5000,
+          "status": true,
+          "stock": 10,
+          "category": "Fotos",
+          "thumbnails": []
+     },
+     {
+          "id": 8,
+          "title": "Fotos polaroid x12u.",
+          "description": "Fotos de 10x9 cm por 12 unidades.",
+          "code": "fp12",
+          "price": 5000,
+          "status": true,
+          "stock": 10,
+          "category": "Fotos",
+          "thumbnails": []
+     },
+     {
+          "id": 9,
+          "title": "Fotos polaroid x18u.",
+          "description": "Fotos de 10x9 cm por 18 unidades.",
+          "code": "fp18",
+          "price": 9000,
+          "status": true,
+          "stock": 10,
+          "category": "Fotos",
+          "thumbnails": []
+     },
+     {
+          "id": 10,
+          "title": "Fotos polaroid x24u.",
+          "description": "Fotos de 10x9 cm por 24 unidades.",
+          "code": "fp24",
+          "price": 13000,
+          "status": true,
+          "stock": 10,
+          "category": "Fotos",
+          "thumbnails": []
+     }
+]
