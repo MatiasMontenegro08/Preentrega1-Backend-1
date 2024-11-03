@@ -1,0 +1,12 @@
+<h2>Home Page</h2>
+<hr>
+
+<h3>Productos disponibles:</h3>
+
+<ul>
+    {{#each productos}}
+        <li>{{title}} | Precio: ${{price}}</li>
+    {{/each}}
+</ul>
+<hr>
+<a href="/realtimeproducts">RealTimeProducts</a>

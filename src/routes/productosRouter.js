@@ -19,11 +19,11 @@ router.get("/", async (req, res) => {
             }
         }
         if (!skip) {
-            skip = 0
+            skip = 0;
         } else {
-            skip = Number(skip)
+            skip = Number(skip);
             if (isNaN(skip)) {
-                return res.send(`Error: el skip debe ser numérico.`)
+                return res.send(`Error: el skip debe ser numérico.`);
             }
         }
         productos = productos.slice(skip, limit + skip);
@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
     } catch (error) {
         procesarErrores(res, error);
     }
-})
+});
 
 router.get("/:pid", async (req, res) => {
     let { pid } = req.params;
@@ -50,7 +50,7 @@ router.get("/:pid", async (req, res) => {
     } catch (error) {
         procesarErrores(res, error);
     }
-})
+});
 
 router.post("/", async (req, res) => {
     let { id, title, description, code, price, stock, category, thumbnails } = req.body;
@@ -65,15 +65,20 @@ router.post("/", async (req, res) => {
         let existe = productos.find(p => p.code.toLowerCase() === code.trim().toLowerCase());
         if (existe) {
             res.setHeader('Content-Type', 'application/json');
-            return res.status(400).json({ error: `Code: ${code} => Error, el producto con este code ya existe en la Base de Datos.`});
+            return res.status(400).json({ error: `Code: ${code} => Error, el producto con este code ya existe en la Base de Datos.` });
         }
         let nuevoProducto = await ProductosManager.addProducto({ title, description, code, price, status: true, stock, category, thumbnails });
+
+        const io = req.app.get("io");
+        const productosActualizados = await ProductosManager.getProductos();
+        io.emit("productoActualizado", productosActualizados);
+
         res.setHeader('Content-Type', 'application/json');
         return res.status(201).json({ nuevoProducto });
     } catch (error) {
         procesarErrores(res, error);
     }
-})
+});
 
 router.put("/:pid", async (req, res) => {
     let { pid } = req.params;
@@ -101,7 +106,6 @@ router.put("/:pid", async (req, res) => {
     }
 });
 
-
 router.delete("/:pid", async (req, res) => {
     let { pid } = req.params;
     pid = Number(pid);
@@ -114,9 +118,14 @@ router.delete("/:pid", async (req, res) => {
         if (noExisteProducto(producto, pid, res)) return;
 
         let productoEliminado = await ProductosManager.eliminarProducto(pid);
+
+        const io = req.app.get("io");
+        const productosActualizados = await ProductosManager.getProductos();
+        io.emit("productoActualizado", productosActualizados);
+
         res.setHeader('Content-Type', 'application/json');
         return res.status(200).json({ productoEliminado });
     } catch (error) {
         procesarErrores(res, error);
     }
-})
+});
