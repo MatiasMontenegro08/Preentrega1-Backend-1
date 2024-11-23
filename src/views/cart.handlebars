@@ -1,0 +1,16 @@
+<h2>Carrito ID: {{_id}}</h2>
+<hr>
+<ul>
+    {{#each products}}
+        <li>
+            <strong>{{this.product.title}}</strong> - Cantidad: {{this.quantity}}
+            <br>
+            <form action="/carts/{{../_id}}/products/{{this.product._id}}" method="DELETE" style="display:inline;">
+                <button type="submit">Eliminar del carrito</button>
+            </form>
+        </li>
+    {{/each}}
+</ul>
+
+<hr>
+<a href="/products">Volver a productos</a>

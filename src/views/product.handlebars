@@ -1,0 +1,12 @@
+<h2>{{title}}</h2>
+<hr>
+<p><strong>Descripción:</strong> {{description}}</p>
+<p><strong>Precio:</strong> ${{price}}</p>
+<p><strong>Categoría:</strong> {{category}}</p>
+<p><strong>Stock:</strong> {{stock}}</p>
+
+<form action="/carts/{{carritoId}}/products/{{_id}}" method="POST">
+    <button type="submit">Agregar al carrito</button>
+</form>
+<hr>
+<a href="/products">Volver a productos</a>

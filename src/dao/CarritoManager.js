@@ -1,11 +1,8 @@
 import fs from 'fs';
+import { config } from '../config/config.js';
 
 export class CarritosManager {
-    static #path = "";
-
-    static setPath (rutaArchivo = ""){
-        this.#path = rutaArchivo;
-    }
+    static #path = config.CARRITOS_PATH;
 
     static async getCarritos() {
         if (fs.existsSync(this.#path)) {

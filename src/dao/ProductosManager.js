@@ -1,11 +1,8 @@
 import fs from 'fs'
+import { config } from '../config/config.js'
 
 export class ProductosManager{
-    static #path=""
-
-    static setPath (rutaArchivo=""){
-        this.#path=rutaArchivo
-    }
+    static #path=config.PRODUCTOS_PATH;
 
     static async getProductos(){
         if(fs.existsSync(this.#path)){

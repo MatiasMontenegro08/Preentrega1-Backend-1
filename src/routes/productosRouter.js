@@ -1,34 +1,77 @@
 import { Router } from "express";
-import { ProductosManager } from "../dao/ProductosManager.js";
-import { procesarErrores, validacionesBody, noExisteProducto, idNoEsNumerico } from "../utils.js";
+import { ProductosMongoManager as ProductosManager } from "../dao/ProductosMongoManager.js";
+import { procesarErrores, validacionesBody, noExisteProducto} from "../utils.js";
+import { isValidObjectId } from "mongoose";
 
 export const router = Router();
 
-ProductosManager.setPath("./src/data/productos.json");
-
 router.get("/", async (req, res) => {
-    let { limit, skip } = req.query;
+    let { limit = 10, page = 1, sort, query } = req.query;
+
     try {
-        let productos = await ProductosManager.getProductos();       
-        if (!limit) {
-            limit = productos.length;
-        } else {
-            limit = Number(limit);
-            if (isNaN(limit)) {
-                return res.send(`Error: el limit debe ser numérico.`);
+        limit = Number(limit);
+        page = Number(page);
+
+        if (isNaN(limit) || limit <= 0) {
+            return res.status(400).json({ status: "error", error: "El parámetro 'limit' debe ser un número positivo." });
+        }
+
+        if (isNaN(page) || page <= 0) {
+            return res.status(400).json({ status: "error", error: "El parámetro 'page' debe ser un número positivo." });
+        }
+
+        let filtro = {};
+        if (query) {
+            filtro = {
+                $or: [
+                    { category: query },
+                    { title: { $regex: query, $options: "i" } }
+                ]
+            };
+        }
+
+        let productos = await ProductosManager.getProductos(filtro);
+
+        if (sort) {
+            if (sort === "asc") {
+                productos.sort((a, b) => a.price - b.price);
+            } else if (sort === "desc") {
+                productos.sort((a, b) => b.price - a.price);
+            } else {
+                return res.status(400).json({ status: "error", error: "El parámetro 'sort' debe ser 'asc' o 'desc'." });
             }
         }
-        if (!skip) {
-            skip = 0;
-        } else {
-            skip = Number(skip);
-            if (isNaN(skip)) {
-                return res.send(`Error: el skip debe ser numérico.`);
-            }
+
+        const totalProductos = productos.length;
+        const totalPages = Math.ceil(totalProductos / limit);
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+
+        if (startIndex >= totalProductos) {
+            return res.status(404).json({ status: "error", error: "La página solicitada está fuera de rango." });
         }
-        productos = productos.slice(skip, limit + skip);
+
+        const productosPaginados = productos.slice(startIndex, endIndex);
+
+        const hasPrevPage = page > 1;
+        const hasNextPage = page < totalPages;
+        const prevLink = hasPrevPage ? `/api/products/?limit=${limit}&page=${page - 1}&sort=${sort || ""}&query=${query || ""}` : null;
+        const nextLink = hasNextPage ? `/api/products/?limit=${limit}&page=${page + 1}&sort=${sort || ""}&query=${query || ""}` : null;
+
         res.setHeader('Content-Type', 'application/json');
-        return res.status(200).json({ productos });
+        return res.status(200).json({
+            status: "success",
+            payload: productosPaginados,
+            totalPages,
+            prevPage: hasPrevPage ? page - 1 : null,
+            nextPage: hasNextPage ? page + 1 : null,
+            page,
+            hasPrevPage,
+            hasNextPage,
+            prevLink,
+            nextLink,
+        });
+
     } catch (error) {
         procesarErrores(res, error);
     }
@@ -36,9 +79,11 @@ router.get("/", async (req, res) => {
 
 router.get("/:pid", async (req, res) => {
     let { pid } = req.params;
-    pid = Number(pid);
-
-    if (idNoEsNumerico(pid, res)) return;
+    
+    if (!isValidObjectId(pid)) {
+        res.setHeader('Content-Type','application/json');
+        return res.status(400).json({error: "Id no válido"})
+    }
 
     try {
         let producto = await ProductosManager.getProductosById(pid);
@@ -82,9 +127,11 @@ router.post("/", async (req, res) => {
 
 router.put("/:pid", async (req, res) => {
     let { pid } = req.params;
-    pid = Number(pid);
 
-    if (idNoEsNumerico(pid, res)) return;
+    if (!isValidObjectId(pid)) {
+        res.setHeader('Content-Type','application/json');
+        return res.status(400).json({error: "Id no válido"})
+    }
 
     let datosModificar = req.body;
 
@@ -108,9 +155,11 @@ router.put("/:pid", async (req, res) => {
 
 router.delete("/:pid", async (req, res) => {
     let { pid } = req.params;
-    pid = Number(pid);
 
-    if (idNoEsNumerico(pid, res)) return;
+    if (!isValidObjectId(pid)) {
+        res.setHeader('Content-Type','application/json');
+        return res.status(400).json({error: "Id no válido"})
+    }
 
     try {
         let producto = await ProductosManager.getProductosById(pid);
